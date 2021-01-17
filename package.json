@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "@types/node": "^14.14.21",
+    "@types/ws": "^7.4.0",
+    "node-addon-api": "^3.1.0",
+    "ws": "^7.4.2"
+  },
+  "name": "gtbot",
+  "version": "0.1.0",
+  "description": "A Growtopia Bot coded for websites.",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "proxy": "node scripts/clean && cd proxy/src && tsc --project tsconfig.json && node out/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alexander9673/GTBot.git"
+  },
+  "keywords": [
+    "growtopia",
+    "gt",
+    "gtbot",
+    "bot",
+    "growtopiabot"
+  ],
+  "author": "Alexander9673",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Alexander9673/GTBot/issues"
+  },
+  "homepage": "https://github.com/Alexander9673/GTBot#readme"
+}
