@@ -2,9 +2,6 @@
   "ws": {
     "port": 3030
   },
-  
-  "enet": {
-    "ip": "213.179.209.168",
-    "port": 17196
-  }
+
+  "usingNewPacket": true
 }

@@ -21,7 +21,7 @@ class Proxy {
       dscn: this.onDisconnect.bind(this)
     })
 
-    Native.init()
+    Native.init(Config.usingNewPacket)
 
     this.asyncListenEvents()
     console.log('Now listening for ENet Events.')
@@ -75,21 +75,50 @@ class Proxy {
 
   public wsListen() {
     this.ws.on('connection', (socket: ENetSocket) => {
-      // Initialize socket data
-      socket.data = {
-        netID: this.netID++,
+      socket.on('close', () => {
+        if (!socket.data) return
 
-        // Create a new ENet Connection and store the returned ip
-        ip: Native.newConnection(Config.enet.ip, Config.enet.port)
-      }
+        // disconnect them from the ENet server
+        Native.disconnect(socket.data.netID)
 
-      // put socket data to the cache
-      this.sockets.set(socket.data.netID, socket)
+        // delete socket from cache
+        this.sockets.delete(socket.data.netID)
+      })
 
-      socket.on('message', (data: Buffer) => {
-        // received a from the socket
-        // send it to the ENet Server
-        Native.send(socket.data.netID, Buffer.from(data))
+      // listen for messages of the socket
+      socket.on('message', (chunk) => {
+        const str = chunk.toString()
+
+        // check for initialization of connections
+        if (str.startsWith('INIT:')) {
+          // init format: INIT:IP@PORT
+          const host     = str.slice('INIT:'.length)
+          let [ip, port] = host.split('@') as (string|number)[]
+
+          if (typeof port !== 'number')
+            port = parseInt(port)
+
+          if (isNaN(port)) port = 17091
+          if (!ip) ip = '127.0.0.1'
+
+          // connect to the ENet Server
+          socket.data = {
+            netID: this.netID++,
+
+            // Create a new ENet Connection and store the returned ip
+            ip: Native.newConnection(ip as string, port),
+
+            host: { ip: ip as string, port },
+            hasInitialized: true,
+          }
+
+          // put socket to cache
+          this.sockets.set(socket.data.netID, socket)
+        } else {
+          if (!socket.data?.hasInitialized) return socket.close(4000, 'Connection hasn\'t initialized.')
+
+          Native.send(socket.data.netID, Buffer.from(chunk as string))
+        }
       })
     })
   }

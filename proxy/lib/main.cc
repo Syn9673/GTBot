@@ -7,8 +7,6 @@
 #include <cstring>
 
 ENetHost* client;
-
-ENetHost* host;
 ENetAddress address;
 
 Napi::FunctionReference on_conn;
@@ -109,11 +107,11 @@ void __peer_service(NAPI_ARG)
 
       case ENET_EVENT_TYPE_DISCONNECT:
       {
-        unsigned int id = (unsigned int)event.peer->data;
+        /*unsigned int id = (unsigned int)event.peer->data;
 
         on_dscn.Call({
           NAPI_NUM(env, id)
-        });
+        });*/
       } break;
 
       case ENET_EVENT_TYPE_NONE:
@@ -138,14 +136,33 @@ void __send(NAPI_ARG)
 
   for (int i = 0; i < client->peerCount; ++i)
   {
-    ENetPeer* peer     = &client->peers[i];
-    unsigned int p_id = (unsigned int)peer->data;
+    ENetPeer* peer = &client->peers[i];
+    if (!peer->data) continue;
 
+    unsigned int p_id = (unsigned int)peer->data;
     if (p_id == id)
     {
       ENetPacket* packet = enet_packet_create(buf.Data(), size, ENET_PACKET_FLAG_RELIABLE);
       enet_peer_send(peer, 0, packet);
 
+      break;
+    }
+  }
+}
+
+void __disconnect(NAPI_ARG)
+{
+  unsigned int id = info[0].As<Napi::Number>().Uint32Value();
+
+  for (int i = 0; i < client->peerCount; ++i)
+  {
+    ENetPeer* peer = &client->peers[i];
+    if (!peer->data) continue;
+
+    unsigned int p_id = (unsigned int)peer->data;
+    if (p_id == id)
+    {
+      enet_peer_disconnect(peer, 0);
       break;
     }
   }
@@ -158,6 +175,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
   NAPI_FN(exports, "peer_service", env, __peer_service);
   NAPI_FN(exports, "set_cb", env, __set_cb);
   NAPI_FN(exports, "send", env, __send);
+  NAPI_FN(exports, "disconnect", env, __disconnect);
 
   return exports;
 }

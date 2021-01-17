@@ -54,6 +54,14 @@ class Native {
   public static send(netID: number, chunk: Buffer) {
     native.send(netID, chunk)
   }
+
+  /**
+   * Disconnect a specific peer.
+   * @param netID The netID of the peer.
+   */
+  public static disconnect(netID: number) {
+    native.disconnect(netID)
+  }
 }
 
 export default Native

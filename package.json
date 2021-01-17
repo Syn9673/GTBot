@@ -11,7 +11,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "proxy": "node scripts/clean && cd proxy/src && tsc --project tsconfig.json && node out/"
+    "proxy": "node scripts/clean && cd proxy/src && tsc --project tsconfig.json && node out/",
+    "buildProxy": "cd proxy/lib/ && node-gyp rebuild"
   },
   "repository": {
     "type": "git",
