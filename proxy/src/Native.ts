@@ -32,10 +32,9 @@ class Native {
    * Creates a new connection.
    * @param ip The ip address to connect to.
    * @param host The port to connect with the ip.
-   * @returns The ip of the peer.
    */
-  public static newConnection(ip: string, port: number): string {
-    return native.new_conn(ip, port)
+  public static newConnection(ip: string, port: number) {
+    native.new_conn(ip, port)
   }
 
   /**

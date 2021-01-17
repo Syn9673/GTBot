@@ -48,9 +48,12 @@ class Proxy {
   public onDisconnect(netID: number) {
     // fetch the socket from the cache via the netID
     const socket = this.sockets.get(netID)
+    if (!socket) return
+
+    console.log('Socket disconnected:', socket.data)
 
     // disconnect the socket
-    socket?.close()
+    socket.close()
 
     // delete the socket from cache
     this.sockets.delete(netID)
@@ -104,13 +107,13 @@ class Proxy {
           // connect to the ENet Server
           socket.data = {
             netID: this.netID++,
-
-            // Create a new ENet Connection and store the returned ip
-            ip: Native.newConnection(ip as string, port),
-
+            ip: socket['_socket'].remoteAddress.split('::ffff:').join(''),
             host: { ip: ip as string, port },
             hasInitialized: true,
           }
+
+          // Create a new ENet Connection and store the returned ip
+          Native.newConnection(ip as string, port)
 
           // put socket to cache
           this.sockets.set(socket.data.netID, socket)

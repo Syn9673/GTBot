@@ -56,14 +56,6 @@ Napi::String __new_conn(NAPI_ARG)
 
   peer = enet_host_connect(client, &address, 2, 0);
   peer->data = (void*)++netID;
-
-  char* ip = new char[16];
-  enet_address_get_host_ip(&peer->address, ip, 16);
-
-  Napi::String ip_str = Napi::String::New(info.Env(), ip);
-  delete[] ip;
-
-  return ip_str;
 }
 
 void __peer_service(NAPI_ARG)
@@ -107,11 +99,11 @@ void __peer_service(NAPI_ARG)
 
       case ENET_EVENT_TYPE_DISCONNECT:
       {
-        /*unsigned int id = (unsigned int)event.peer->data;
+        unsigned int id = (unsigned int)event.peer->data;
 
         on_dscn.Call({
           NAPI_NUM(env, id)
-        });*/
+        });
       } break;
 
       case ENET_EVENT_TYPE_NONE:
