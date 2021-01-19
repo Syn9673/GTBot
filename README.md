@@ -83,6 +83,7 @@ The `config` file contains the required data to make it work.
   and it should be online.
 
 ## TODO List:
+  - [ ] Recode Proxy to make a ENet Host **per** connection instead of one shared connection.
   - [ ] Support subserver connections.
   - [ ] Fix connections to private servers.
   - [ ] World Joining
