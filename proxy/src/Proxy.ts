@@ -1,6 +1,6 @@
 import Native from './Native'
 import Websocket from 'ws'
-import Config from './config.json'
+import { proxy as Config } from '../../config.json'
 import { ENetSocket } from './Socket'
 
 class Proxy {
@@ -22,12 +22,19 @@ class Proxy {
     })
 
     Native.init(Config.usingNewPacket)
+    console.log('Config Data:', Config)
 
     this.asyncListenEvents()
     console.log('Now listening for ENet Events.')
 
     this.wsListen()
     console.log('Now Listening to Websocket Events')
+
+    process.on('SIGINT', () => {
+      Native.deInit()
+
+      process.exit()
+    })
   }
 
   public onConnect(netID: number) {
@@ -40,20 +47,19 @@ class Proxy {
   public onReceive(netID: number, chunk: Buffer) {
     // fetch the socket from the cache via the netID
     const socket = this.sockets.get(netID)
+    if (!socket) return
 
     // send the buffer to the socket
-    socket?.send(chunk)
+    socket.send(chunk)
   }
 
   public onDisconnect(netID: number) {
     // fetch the socket from the cache via the netID
     const socket = this.sockets.get(netID)
-    if (!socket) return
-
-    console.log('Socket disconnected:', socket.data)
+    console.log('Peer disconnected:', { netID })
 
     // disconnect the socket
-    socket.close()
+    socket?.close()
 
     // delete the socket from cache
     this.sockets.delete(netID)
@@ -83,6 +89,7 @@ class Proxy {
 
         // disconnect them from the ENet server
         Native.disconnect(socket.data.netID)
+        console.log('Socket disconnected:', socket.data)
 
         // delete socket from cache
         this.sockets.delete(socket.data.netID)

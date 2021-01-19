@@ -1,5 +1,8 @@
 #define NAPI_DISABLE_CPP_EXCEPTIONS 1
-#define MAX_PEERS 1024
+
+#pragma warning(disable : 4312)
+#pragma warning(disable : 4311)
+#pragma warning(disable : 4302)
 
 #include <enet.h>
 #include <napi.h>
@@ -13,7 +16,7 @@ Napi::FunctionReference on_conn;
 Napi::FunctionReference on_recv;
 Napi::FunctionReference on_dscn;
 
-unsigned int netID = 0;
+unsigned int netID = 1;
 
 #define NAPI_ARG Napi::CallbackInfo& info
 
@@ -31,11 +34,11 @@ void __init(NAPI_ARG)
   bool usingNewPacket = info[0].As<Napi::Boolean>().Value();
   enet_initialize();
 
-  client = enet_host_create (NULL /* create a client host */,
-            1024 /* only allow 1 outgoing connection */,
-            2 /* allow up 2 channels to be used, 0 and 1 */,
-            0 /* assume any amount of incoming bandwidth */,
-            0 /* assume any amount of outgoing bandwidth */);
+  client = enet_host_create(NULL,
+            1024,
+            0,
+            0,
+            0);
 
   client->usingNewPacket = usingNewPacket;
   client->checksum       = enet_crc32;
@@ -43,7 +46,7 @@ void __init(NAPI_ARG)
   enet_host_compress_with_range_coder(client);
 }
 
-Napi::String __new_conn(NAPI_ARG)
+void __new_conn(NAPI_ARG)
 {
   ENetAddress address;
   ENetPeer* peer;
@@ -55,7 +58,7 @@ Napi::String __new_conn(NAPI_ARG)
   enet_address_set_host(&address, host);
 
   peer = enet_host_connect(client, &address, 2, 0);
-  peer->data = (void*)++netID;
+  peer->data = (void*)netID++;
 }
 
 void __peer_service(NAPI_ARG)
@@ -154,10 +157,15 @@ void __disconnect(NAPI_ARG)
     unsigned int p_id = (unsigned int)peer->data;
     if (p_id == id)
     {
-      enet_peer_disconnect(peer, 0);
+      enet_peer_disconnect_now(peer, 0);
       break;
     }
   }
+}
+
+void __de_init(NAPI_ARG)
+{
+  enet_deinitialize();
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
@@ -168,6 +176,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
   NAPI_FN(exports, "set_cb", env, __set_cb);
   NAPI_FN(exports, "send", env, __send);
   NAPI_FN(exports, "disconnect", env, __disconnect);
+  NAPI_FN(exports, "de_init", env, __de_init);
 
   return exports;
 }

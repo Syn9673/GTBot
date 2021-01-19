@@ -16,7 +16,10 @@ class Native {
    * Initialize ENet.
    * @param usingNewPacket Whether or not to use the new packet protocol.
    */
-  public static init(usingNewPacket: boolean = true) {
+  public static init(usingNewPacket: boolean) {
+    if (typeof usingNewPacket !== 'boolean')
+      usingNewPacket = true
+      
     native.init(usingNewPacket)
   }
 
@@ -60,6 +63,13 @@ class Native {
    */
   public static disconnect(netID: number) {
     native.disconnect(netID)
+  }
+
+  /**
+   * De-initializes ENet.
+   */
+  public static deInit() {
+    native.de_init()
   }
 }
 

@@ -2,7 +2,14 @@
   "dependencies": {
     "@types/node": "^14.14.21",
     "@types/ws": "^7.4.0",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "next": "^10.0.5",
     "node-addon-api": "^3.1.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "reactstrap": "^8.8.1",
+    "restana": "^4.8.1",
     "ws": "^7.4.2"
   },
   "name": "gtbot",
@@ -11,8 +18,12 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "proxy": "node scripts/clean && cd proxy/src && tsc --project tsconfig.json && node out/",
-    "buildProxy": "cd proxy/lib/ && node-gyp rebuild"
+    "proxy": "node scripts/clean && cd proxy/src && tsc --project tsconfig.json && node out/proxy/src",
+    "buildProxy": "cd proxy/lib/ && node-gyp rebuild",
+    "buildSite": "cd web && next build",
+    "site": "cd web && next start -p 80",
+    "siteDev": "cd web && next dev -p 80",
+    "cors": "node cors/"
   },
   "repository": {
     "type": "git",

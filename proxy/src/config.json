@@ -1,7 +1,0 @@
-{
-  "ws": {
-    "port": 3030
-  },
-
-  "usingNewPacket": true
-}

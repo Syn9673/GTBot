@@ -1,0 +1,28 @@
+{
+  "proxy": {
+    "ws": {
+      "port": 3131
+    },
+  
+    "usingNewPacket": false
+  },
+
+  "web": {
+    "wsServers": [
+      {
+        "host": "127.0.0.1",
+        "port": 3030,
+        "usingNewPacket": true
+      },
+      {
+        "host": "127.0.0.1",
+        "port": 3131
+      }
+    ]
+  },
+
+  "cors": {
+    "host": "localhost",
+    "port": 8181
+  }
+}
