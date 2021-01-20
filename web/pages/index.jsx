@@ -41,7 +41,9 @@ class Index extends Component {
 
       user: {
         name: '',
-        pass: ''
+        pass: '',
+        meta: '',
+        redir: null
       },
 
       server: {
@@ -49,7 +51,6 @@ class Index extends Component {
         url: '',
         host: '',
         port: -1,
-        meta: '',
         useNewPacket: false
       }
     }
@@ -70,6 +71,7 @@ class Index extends Component {
     this.state.wsErrored       = false
     this.state.logs            = []
     this.state.connected       = false
+    this.state.user.redir      = null
 
     delete this.state.ws.connection
     this.setState(this.state)
@@ -98,6 +100,7 @@ class Index extends Component {
         }
       )
     } catch(err) {
+      res = {}
       this.state.server.reqError = err.message
 
       int = -1
@@ -126,7 +129,7 @@ class Index extends Component {
       else {
         this.state.server.host         = ip
         this.state.server.port         = port
-        this.state.server.meta         = meta || 'undefined'
+        this.state.user.meta           = meta || 'undefined'
         this.state.server.useNewPacket = type === '1'
       
         this.log('Server information received.', `${ip}:${port}`)

@@ -1,10 +1,10 @@
 {
   "proxy": {
     "ws": {
-      "port": 3131
+      "port": 3030
     },
   
-    "usingNewPacket": false
+    "usingNewPacket": true
   },
 
   "web": {

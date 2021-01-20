@@ -55,9 +55,17 @@ wk|${crypto.randomBytes(16).toString('hex')}
 zf|-1331849031`
 
   if (!isGuest)
-  text += `
+    text += `
 tankIDName|${user.name}
 tankIDPass|${user.pass}`
+
+  if (user.redir) {
+    text += `
+lmode|${user.redirlmode}
+token|${user.redir.token}
+userid|${user.redir.userid}
+`
+  }
 
   const packet = new TextPacket(MessageTypes.TEXT, [text])
   return packet

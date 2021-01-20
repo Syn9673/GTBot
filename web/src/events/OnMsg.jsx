@@ -29,15 +29,36 @@ const OnMsg = async (page, ws, chunk) => {
         page.log('Received invalid tank packet with length:', chunk.length)
       else {
 
-        if (decoded.data.type === 1)
+        if (decoded.data.type === 1) {
+          const variant = VariantDecode(decoded.data)
           page.log(
             'Received packet:',
             `${getStringType(decoded.data.type)}
 ${VariantToString(
-  VariantDecode(decoded.data)
+  variant
 )}`
           )
-        else page.log('Received packet:', getStringType(decoded.data.type))
+          
+          if (variant.fn === 'OnSendToServer') {
+            const port = variant.args[0]
+            let ip     = variant.args[3]
+
+            ip = ip.split('|')[0]
+
+            page.state.user.redir = {
+              token: page.state.user.redir?.token || variant.args[1],
+              userid: variant.args[2],
+              lmode: variant.args[4]
+            }
+
+            page.state.server.host = ip
+            page.state.server.port = port
+
+            page.setState(page.state)
+
+            ws.send(`REDIR:${ip}@${port}`)
+          }
+        } else page.log('Received packet:', getStringType(decoded.data.type))
       }
     } break;
   }
