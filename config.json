@@ -1,28 +1,13 @@
 {
-  "proxy": {
-    "ws": {
+  "nodes": [
+    {
+      "ip": "188.166.225.134",
       "port": 3030
-    },
-  
-    "usingNewPacket": true
-  },
-
-  "web": {
-    "wsServers": [
-      {
-        "host": "127.0.0.1",
-        "port": 3030,
-        "usingNewPacket": true
-      },
-      {
-        "host": "127.0.0.1",
-        "port": 3131
-      }
-    ]
-  },
+    }
+  ],
 
   "cors": {
-    "host": "localhost",
+    "ip": "188.166.225.134",
     "port": 8181
   }
 }
