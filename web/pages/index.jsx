@@ -4,7 +4,10 @@ import { Button, Card, CardBody, CardHeader, Col, Container, Input, Row } from '
 import Config from '../../config.json'
 import axios from 'axios'
 
-import { toKeyVal, deflate_p, inflate_p } from '../src/Utils'
+import { toKeyVal } from '../src/Utils'
+
+// handlers
+import OnMessage from '../src/OnMessage'
 
 class Index extends Component {
   constructor(props) {
@@ -97,11 +100,7 @@ class Index extends Component {
 
     this.state.ws.onclose = () => this.setState({ connected: false })
 
-    this.state.ws.onmessage = async (chunk) => {
-      chunk = Buffer.from(chunk.data)
-
-      console.log(chunk.toString(), chunk)
-    }
+    this.state.ws.onmessage = OnMessage.bind(this)
 
     this.setState(this.state)
   }
