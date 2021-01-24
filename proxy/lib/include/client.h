@@ -52,6 +52,7 @@ private:
   void deInit(NAPI_CALLBACK);
   void sendPacket(NAPI_CALLBACK);
   void disconnect(NAPI_CALLBACK); 
+  void disconnectNow(NAPI_CALLBACK);
 
 private:
   std::string ip;

@@ -98,7 +98,14 @@ void Client::service(NAPI_CALLBACK)
           NEW_STR(env, "receive"),
           NEW_BFR(env, packet, packetSize)
         });
-      }
+      } break;
+
+      case ENET_EVENT_TYPE_DISCONNECT:
+      {
+        emit.Call({
+          NEW_STR(env, "disconnect")
+        });
+      } break;
     }
   }
 }
@@ -123,6 +130,11 @@ void Client::disconnect(NAPI_CALLBACK)
   enet_peer_disconnect_later(this->peer, 0);
 }
 
+void Client::disconnectNow(NAPI_CALLBACK)
+{
+  enet_peer_disconnect_now(this->peer, 0);
+}
+
 OBJECT Client::Init(ENV env, OBJECT exports)
 {
   Napi::Function func = DefineClass(
@@ -139,7 +151,9 @@ OBJECT Client::Init(ENV env, OBJECT exports)
       InstanceMethod<&Client::connect>("connect"),
       InstanceMethod<&Client::service>("service"),
       InstanceMethod<&Client::deInit>("deInit"),
-      InstanceMethod<&Client::sendPacket>("sendPacket")
+      InstanceMethod<&Client::sendPacket>("sendPacket"),
+      InstanceMethod<&Client::disconnect>("disconnect"),
+      InstanceMethod<&Client::disconnectNow>("disconnectNow")
     }
   );
   

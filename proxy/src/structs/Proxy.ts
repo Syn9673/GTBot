@@ -4,11 +4,43 @@ import { ENetSocket } from './Types'
 
 import { Server } from 'ws'
 
+import { constants, deflate, inflate } from 'zlib'
+import { promisify, inspect } from 'util'
+
+import cluster from 'cluster'
+
+const deflate_p = promisify(deflate)
+const inflate_p = promisify(inflate)
+
 class Proxy extends EventEmitter {
   public ws: Server
 
   constructor(private port: number) {
     super()
+  }
+
+  public log(...args: any[]) {
+    let str = ''
+
+    for (const arg of args) {
+      if (typeof arg === 'object')
+        str += inspect(arg, true, 2, true)
+      else str += arg
+
+      str += ' ' 
+    }
+
+    cluster.worker.send(str.trim())
+  }
+
+  public async send(socket: ENetSocket, data: any) {
+    if (typeof data === 'string' || typeof data === 'number')
+      data = Buffer.from(data.toString())
+    else if (typeof data === 'object' && !Buffer.isBuffer(data))
+      data = Buffer.from(JSON.stringify(data))
+
+    data = await deflate_p(data, { level: constants.Z_MAX_LEVEL })
+    socket.send(data)
   }
 
   private nonBlock(socket: ENetSocket, cb: any) {
@@ -55,7 +87,19 @@ class Proxy extends EventEmitter {
         ip: socket['_socket'].remoteAddress.split('::ffff:').join('')
       }
 
+      socket.on('close', (code, reason) => {
+        this.log('Socket Closed with Code:', code, 'with reason:', reason || 'None')
+        socket.data.client?.disconnect()
+      })
+
       socket.on('message', async (chunk: Buffer) => {
+        try {
+          chunk = await inflate_p(chunk)
+        } catch(err) {
+          console.log(err)
+          return await this.send(socket, 'Failed decompressing message')
+        }
+
         const str = chunk.toString()
 
         if (str.startsWith('INIT:') && !socket.data.initialized) {
@@ -76,7 +120,8 @@ class Proxy extends EventEmitter {
 
           this.nonBlock(socket, socket.data.client.service.bind(socket.data.client))
           socket.data.client.setEmitter(emitter)
-        }
+        } else
+          socket.data.client.sendPacket(chunk)
       })
     })
   }

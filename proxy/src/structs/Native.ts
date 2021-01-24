@@ -1,5 +1,11 @@
 import path from 'path'
-const native = require(`${path.resolve('../../')}/proxy/lib/build/Release/index.node`)
+
+let native
+try {
+  native = require(`${path.resolve('../../')}/proxy/lib/build/Release/index.node`)
+} catch(err) {
+  throw new Error(err.message)
+}
 
 class Native {
   private instance
@@ -68,6 +74,13 @@ class Native {
    */
   public disconnect() {
     this.instance.disconnect()
+  }
+
+  /**
+   * Disconnects the peer now.
+   */
+  public disconnectNow() {
+    this.instance.disconnectNow()
   }
 }
 

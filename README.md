@@ -35,15 +35,8 @@ $ npm install
 Once the packages are installed, you should configure the config inside the `config.json` file.  
 The `config` file contains the required data to make it work.  
 
-`proxy` - The proxy object contains two child properties. `ws` which is an object, and `usingNewPacket`.  
-  - The `ws` object contains only one field, which is the `port` property which will signify what port to use for the proxy server.  
-  - The `usingNewPacket` property is set if the proxy will use the new packet protocol that Growtopia has.
-
-`web` - The `web` object contains only one property, which is `wsServers`. Which is an array of websocket servers that it can connect to.  
--  Each object in the `wsServers` array has 3 properties, `host`, `port`.
-   - The `host` property indicates what ip the websocket server is hosted at.
-   - The `port` ip determines what port the websocket server is listening to.
-   - The `usingNewPacket` indicated if the websocket uses the new packet protocol. This is optional and defaults to `false`.
+`nodes` - The nodes array is what the proxy code will create and the nodes to connect to from the website. When starting up the proxy, it will create `X` amount of forks of the master process with each fork containing a different node instance. Then the website will also choose from those nodes on which to connect to **randomly**.
+  - Each element in the `nodes` array contains an object, with two fields. `ip` and `port`. The `ip` is what the website will use to connect through, and the `port` field will be the port the proxy will listen to and the port the website will connect through.
 
 `cors` - Next up is the `cors` object. This is pretty much a proxy for web requests to "bypass" the no-cross origin errors. This should only be set if you are using the website. It has 2 properties, `host` and `port`.
   - `host` would be the ip on which the cors proxy is hosted at.
@@ -83,12 +76,12 @@ The `config` file contains the required data to make it work.
   and it should be online.
 
 ## TODO List:
-  - [ ] Restructure config & redesign website.
+  - [x] Restructure config & redesign website.
   - [x] Recode Proxy to make a ENet Host **per** connection instead of one shared connection.
   - [ ] Support subserver connections.
   - [x] Fix connections to private servers.
   - [ ] World Joining
-  - [ ] ???
+  - [ ] ??? (Suggest at our support server)
 
 ## Support
 You can join the [Pogtopia Development Discord](https://discord.gg/vap8XBhhvz) and ask in the `#coding` channel for support about this project. 
