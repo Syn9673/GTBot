@@ -78,10 +78,14 @@ The `config` file contains the required data to make it work.
 ## TODO List:
   - [x] Restructure config & redesign website.
   - [x] Recode Proxy to make a ENet Host **per** connection instead of one shared connection.
-  - [ ] Support subserver connections.
+  - [ ] Support subserver connections (OnSendToServer).
   - [x] Fix connections to private servers.
   - [x] World Joining
   - [ ] Get all player details in world.
+    - [ ] Card Design.
+    - [x] Get Necessary info from `OnSpawn`.
+    - [ ] Update Player details if necessary.
+    - [ ] Player details cleanup. (When leaving world)
   - [ ] ??? (Suggest at our support server)
 
 ## Support

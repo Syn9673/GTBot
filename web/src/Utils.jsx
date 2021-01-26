@@ -12,8 +12,8 @@ export const toKeyVal = (str) => {
   const lines = str.split('\n')
 
   for (const line of lines) {
-    let [key, value] = line.split('|')
-    value = value?.trim()
+    let [key, ...value] = line.split('|')
+    if (value.length < 2) value = value.join('')?.trim()
 
     map.set(key, value)
   }
@@ -26,7 +26,7 @@ export const buildMac = () => {
   for (let i = 0; i < 5; i++)
     arr.push(crypto.randomBytes(1)[0])
 
-  return '02:' + arr.map(i => i.toString(16)).join(':')
+  return '02:' + arr.map(i => i.toString(16).padStart(2, '0')).join(':')
 }
 
 export const buildLoginData = (user = {}) => {

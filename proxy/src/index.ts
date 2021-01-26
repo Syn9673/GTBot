@@ -1,6 +1,7 @@
 import Proxy from './structs/Proxy'
 import Config from '../../config.json'
 import cluster from 'cluster'
+import { ENetSocket } from './structs/Types'
 
 if (cluster.isMaster) {
   for (const _ of Config.nodes) {
@@ -24,9 +25,11 @@ if (cluster.isMaster) {
     proxy.send(socket, chunk)
   })
 
-  proxy.on('disconnect', (socket) => {
+  proxy.on('disconnect', (socket: ENetSocket) => {
     proxy.log('Socket', socket.data, 'disconnected from ENet Server')
     socket.close()
+
+    socket.data.client.deInit()
   })
   
   proxy.start()

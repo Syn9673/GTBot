@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Button, Card, CardBody, CardHeader, Col, Container, Input, Row } from 'reactstrap'
+import { Button, Col, Container, Input, Row } from 'reactstrap'
 
 import Config from '../../config.json'
 import { deflate_p } from '../src/Utils'
@@ -10,6 +10,7 @@ import { PacketTypes, Z_MAX_LEVEL } from '../src/Constants'
 import OnOpen from '../src/Events/OnOpen'
 import OnClose from '../src/Events/OnClose'
 import Text from '../src/Packets/Text'
+import Card from '../components/Card'
 
 class Index extends Component {
   constructor(props) {
@@ -38,7 +39,11 @@ class Index extends Component {
       fullyConnected: false,
       logs: [],
       showWorldDialog: false,
-      worldName: ''
+      worldName: '',
+      player: {
+        current: null,
+        others: []
+      }
     }
   }
 
@@ -139,198 +144,164 @@ class Index extends Component {
       <Container className='my-9'>
         <Row>
           <Col md={4}>
-            <Card className='bg-gradient-dark text-light text-center'>
-              <CardHeader
-                className='bg-gradient-dark'
-                style={
-                  { padding: '0' }
-                }
-              >
-                <h3 className='text-light'>Server Host</h3>
-              </CardHeader>
-              <CardBody>
-                <center>
-                  <div className='mb-2'>
-                    <Input
-                      style={
-                        { maxWidth: '240px' }
-                      }
-                      bsSize='sm'
-                      name='url'
-                      placeholder='Server Host IP'
-                      onChange={this.onHostUrlUpdate.bind(this)}
-                      className='bg-gradient-dark text-light'
-                      disabled={this.state.connected}
-                    />
-                  </div>
+            <Card header='Server Host'>
+              <center>
+                <div className='mb-2'>
+                  <Input
+                    style={
+                      { maxWidth: '240px' }
+                    }
+                    bsSize='sm'
+                    name='url'
+                    placeholder='Server Host IP'
+                    onChange={this.onHostUrlUpdate.bind(this)}
+                    className='bg-gradient-dark text-light'
+                    disabled={this.state.connected}
+                  />
+                </div>
 
+                <div>
+                  <Button
+                    color='success'
+                    className='shadow-none mb-2'
+                    size='sm'
+                    outline
+                    onClick={this.nodeConnect.bind(this)}
+                    disabled={this.state.connected}
+                  >
+                    Connect
+                  </Button>
+
+                  {this.state.error ? (
+                    <p className='mt-2 text-danger'>Error: {this.state.error}</p>
+                  ) : null}
+                </div>
+                {this.state.fullyConnected ? (
                   <div>
                     <Button
-                      color='success'
-                      className='shadow-none mb-2'
+                      color='danger'
+                      className='shadow-none'
                       size='sm'
                       outline
-                      onClick={this.nodeConnect.bind(this)}
-                      disabled={this.state.connected}
+                      onClick={() => this.state.ws.close()}
                     >
-                      Connect
+                      Disconnect
                     </Button>
-
-                    {this.state.error ? (
-                      <p className='mt-2 text-danger'>Error: {this.state.error}</p>
-                    ) : null}
                   </div>
-                  {this.state.fullyConnected ? (
-                    <div>
-                      <Button
-                        color='danger'
-                        className='shadow-none'
-                        size='sm'
-                        outline
-                        onClick={() => this.state.ws.close()}
-                      >
-                        Disconnect
-                      </Button>
-                    </div>
-                  ) : null}
-                </center>
-              </CardBody>
+                ) : null}
+              </center>
             </Card>
-            <Card className='bg-gradient-dark text-light text-center my-2'>
-              <CardHeader
-                className='bg-gradient-dark'
-                style={
-                  { padding: '0' }
-                }
-              >
-                <h3 className='text-light'>User Account</h3>
-              </CardHeader>
-              <CardBody>
-                <center>
-                  <div className='mb-2'>
-                    <Input
-                      style={
-                        { maxWidth: '240px' }
-                      }
-                      bsSize='sm'
-                      name='url'
-                      name='name'
-                      placeholder='Username'
-                      onChange={this.updateLoginInfo.bind(this)}
-                      className='bg-gradient-dark text-light'
-                    />
-                  </div>
-                  <div className='mb-2'>
-                    <Input
-                      style={
-                        { maxWidth: '240px' }
-                      }
-                      bsSize='sm'
-                      name='url'
-                      name='pass'
-                      placeholder='Password'
-                      type='password'
-                      onChange={this.updateLoginInfo.bind(this)}
-                      className='bg-gradient-dark text-light'
-                    />
-                  </div>
-                </center>
-              </CardBody>
+            <Card header='User Account'>
+              <center>
+                <div className='mb-2'>
+                  <Input
+                    style={
+                      { maxWidth: '240px' }
+                    }
+                    bsSize='sm'
+                    name='url'
+                    name='name'
+                    placeholder='Username'
+                    onChange={this.updateLoginInfo.bind(this)}
+                    className='bg-gradient-dark text-light'
+                  />
+                </div>
+                <div className='mb-2'>
+                  <Input
+                    style={
+                      { maxWidth: '240px' }
+                    }
+                    bsSize='sm'
+                    name='url'
+                    name='pass'
+                    placeholder='Password'
+                    type='password'
+                    onChange={this.updateLoginInfo.bind(this)}
+                    className='bg-gradient-dark text-light'
+                  />
+                </div>
+              </center>
             </Card>
             {this.state.showWorldDialog ? (
-              <Card className='bg-gradient-dark text-light text-center my-2'>
-                <CardHeader
-                  className='bg-gradient-dark'
-                  style={
-                    { padding: '0' }
-                  }
-                >
-                  <h3 className='text-light'>Join World</h3>
-                </CardHeader>
-                <CardBody>
-                  <div className='mb-2'>
-                    <Input
-                      style={
-                        { maxWidth: '240px' }
-                      }
-                      maxLength={26}
-                      bsSize='sm'
-                      placeholder='World Name'
-                      onChange={(evt) => this.setState({ worldName: evt.target.value })}
-                      className='bg-gradient-dark text-light'
-                    />
-                  </div>
-                  <div>
-                    <Button
-                      outline
-                      color='success'
-                      size='sm'
-                      className='shadow-none'
-                      onClick={this.joinWorld.bind(this)}
-                    >
-                      Join
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
-            ) : null}
-          </Col>
-          <Col md={8}>
-            <Card className='bg-gradient-dark'>
-              <CardHeader
-                className='bg-gradient-dark text-center'
-                style={
-                  { padding: 0 }
-                }
-              >
-                <h3 className='text-light'>Packet Logs</h3>
-              </CardHeader>
-              <CardBody>
-                <div
-                  className='bg-gradient-dark border'
-                  style={
-                    {
-                      height: '480px',
-                      maxHeight: '480px',
-                      overflow: 'auto'
+              <Card header='Join World'>
+                <div className='mb-2'>
+                  <Input
+                    style={
+                      { maxWidth: '240px' }
                     }
-                  }
-                >
-                  <div className='m-2'>
-                    {this.state.logs.map((s, i) => (
-                        <div
-                          key={i}
-                          className='text-light mb-3'
-                          style={
-                            { whiteSpace: 'pre', padding: 0 }
-                          }
-                          onMouseEnter={(evt) => evt.target.style.backgroundColor = 'rgb(42, 42, 42)'}
-                          onMouseLeave={(evt) => evt.target.style.backgroundColor = 'transparent'}
-                        >
-                          {s}
-                        </div>
-                        )
-                      )
-                    }
-                  </div>
+                    maxLength={26}
+                    bsSize='sm'
+                    placeholder='World Name'
+                    onChange={(evt) => this.setState({ worldName: evt.target.value })}
+                    className='bg-gradient-dark text-light'
+                  />
                 </div>
-                <div
-                  className='mt-2'
-                  style={
-                    { textAlign: 'right' }
-                  }   
-                >
+                <div className='text-center'>
                   <Button
                     outline
-                    color='primary'
+                    color='success'
                     size='sm'
                     className='shadow-none'
-                    onClick={() => this.setState({ logs: [] })}
+                    onClick={this.joinWorld.bind(this)}
                   >
-                    Clear
+                    Join
                   </Button>
                 </div>
-              </CardBody>
+              </Card>
+            ) : null}
+            {/*this.state.player.current ? (
+              <Card header='Current Player Data'>
+                <p>X: {parseInt(this.state.player.current.pos.x) / 32}</p>
+                <p>Y: {parseInt(this.state.player.current.pos.y) / 32}</p>
+              </Card>
+            ) : null*/}
+          </Col>
+          <Col md={8}>
+            <Card header='Packet Logs'>
+              <div
+                className='bg-gradient-dark border'
+                style={
+                  {
+                    height: '480px',
+                    maxHeight: '480px',
+                    overflow: 'auto'
+                  }
+                }
+              >
+                <div className='m-2'>
+                  {this.state.logs.map((s, i) => (
+                      <div
+                        key={i}
+                        className='text-light mb-3'
+                        style={
+                          { whiteSpace: 'pre', padding: 0 }
+                        }
+                        onMouseEnter={(evt) => evt.target.style.backgroundColor = 'rgb(42, 42, 42)'}
+                        onMouseLeave={(evt) => evt.target.style.backgroundColor = 'transparent'}
+                      >
+                        {s}
+                      </div>
+                      )
+                    )
+                  }
+                </div>
+              </div>
+              <div
+                className='mt-2'
+                style={
+                  { textAlign: 'right' }
+                }   
+              >
+                <Button
+                  outline
+                  color='primary'
+                  size='sm'
+                  className='shadow-none'
+                  onClick={() => this.setState({ logs: [] })}
+                >
+                  Clear
+                </Button>
+              </div>
             </Card>
           </Col>
         </Row>
