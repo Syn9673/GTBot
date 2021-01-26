@@ -80,7 +80,8 @@ The `config` file contains the required data to make it work.
   - [x] Recode Proxy to make a ENet Host **per** connection instead of one shared connection.
   - [ ] Support subserver connections.
   - [x] Fix connections to private servers.
-  - [ ] World Joining
+  - [x] World Joining
+  - [ ] Get all player details in world.
   - [ ] ??? (Suggest at our support server)
 
 ## Support

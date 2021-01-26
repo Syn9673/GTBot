@@ -6,9 +6,10 @@ import { deflate_p } from '../src/Utils'
 
 // handlers
 import OnMessage from '../src/Events/OnMessage'
-import { Z_MAX_LEVEL } from '../src/Constants'
+import { PacketTypes, Z_MAX_LEVEL } from '../src/Constants'
 import OnOpen from '../src/Events/OnOpen'
 import OnClose from '../src/Events/OnClose'
+import Text from '../src/Packets/Text'
 
 class Index extends Component {
   constructor(props) {
@@ -35,7 +36,9 @@ class Index extends Component {
 
       connected: false,
       fullyConnected: false,
-      logs: []
+      logs: [],
+      showWorldDialog: false,
+      worldName: ''
     }
   }
 
@@ -46,6 +49,23 @@ class Index extends Component {
 
     this.state.logs.push(str)
     this.setState({ logs: this.state.logs })
+  }
+
+  async joinWorld() {
+    const text = Text.from(
+      PacketTypes.ACTION,
+      'action|validate_world',
+      `name|${this.state.worldName}`
+    )
+    
+    await this.send(text.toBuffer())
+    
+    text.text[0] = 'action|join_request'
+    text.addText('invitedWorld|0')
+
+    await this.send(text.toBuffer())
+
+    this.pushToLogs('Joined world', this.state.worldName)
   }
 
   async send(data) {
@@ -140,7 +160,7 @@ class Index extends Component {
                       placeholder='Server Host IP'
                       onChange={this.onHostUrlUpdate.bind(this)}
                       className='bg-gradient-dark text-light'
-                      readOnly={this.state.connected}
+                      disabled={this.state.connected}
                     />
                   </div>
 
@@ -217,6 +237,43 @@ class Index extends Component {
                 </center>
               </CardBody>
             </Card>
+            {this.state.showWorldDialog ? (
+              <Card className='bg-gradient-dark text-light text-center my-2'>
+                <CardHeader
+                  className='bg-gradient-dark'
+                  style={
+                    { padding: '0' }
+                  }
+                >
+                  <h3 className='text-light'>Join World</h3>
+                </CardHeader>
+                <CardBody>
+                  <div className='mb-2'>
+                    <Input
+                      style={
+                        { maxWidth: '240px' }
+                      }
+                      maxLength={26}
+                      bsSize='sm'
+                      placeholder='World Name'
+                      onChange={(evt) => this.setState({ worldName: evt.target.value })}
+                      className='bg-gradient-dark text-light'
+                    />
+                  </div>
+                  <div>
+                    <Button
+                      outline
+                      color='success'
+                      size='sm'
+                      className='shadow-none'
+                      onClick={this.joinWorld.bind(this)}
+                    >
+                      Join
+                    </Button>
+                  </div>
+                </CardBody>
+              </Card>
+            ) : null}
           </Col>
           <Col md={8}>
             <Card className='bg-gradient-dark'>
@@ -256,6 +313,22 @@ class Index extends Component {
                       )
                     }
                   </div>
+                </div>
+                <div
+                  className='mt-2'
+                  style={
+                    { textAlign: 'right' }
+                  }   
+                >
+                  <Button
+                    outline
+                    color='primary'
+                    size='sm'
+                    className='shadow-none'
+                    onClick={() => this.setState({ logs: [] })}
+                  >
+                    Clear
+                  </Button>
                 </div>
               </CardBody>
             </Card>

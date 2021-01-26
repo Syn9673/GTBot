@@ -1,6 +1,8 @@
 import { PacketTypes, TankPacketNames, Z_MAX_LEVEL } from '../Constants'
-import TankPacket from '../Packets/Tank';
-import { buildLoginData, inflate_p, VariantDecode, VariantToString } from '../Utils';
+import TankPacket from '../Packets/Tank'
+import { buildLoginData, inflate_p } from '../Utils'
+import Variant from '../Packets/Variant'
+import Text from '../Packets/Text'
 
 export default async function OnMessage(chunk) {
   chunk = Buffer.from(chunk.data)
@@ -25,12 +27,25 @@ export default async function OnMessage(chunk) {
       if (tank === -1)
         return this.pushToLogs('Received invalid tank packet with length:', chunk.length)
 
-      switch (TankPacketNames[tank.data.type]) {
-        case 'PACKET_CALL_FUNCTION': {
-          const variant = VariantDecode(tank.data)
+      const tankName = TankPacketNames[tank.data.type]
+      let str        = `Received ${tankName}`
 
-          this.pushToLogs(`Received Variant Packet:
-${VariantToString(variant)}`)
+      switch (tankName) {
+        case 'PACKET_CALL_FUNCTION': {
+          const variant = Variant.from(chunk)
+          str += ': ' + variant
+
+          this.pushToLogs(str)
+
+          switch (variant.data.fn) {
+            case 'OnSuperMainStartAcceptLogonHrdxs47254722215a': {
+              const text = Text.from(2, 'action|enter_game')
+              await this.send(text.toBuffer())
+  
+              this.pushToLogs('Sent enter_game action.')
+              this.setState({ showWorldDialog: true })
+            } break;
+          }
         } break;
       }
     } break;

@@ -16,7 +16,6 @@
   "name": "gtbot",
   "version": "0.1.0",
   "description": "A Growtopia Bot coded for websites.",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "proxy": "node scripts/clean && cd proxy/src && tsc --project tsconfig.json && node out/proxy/src",

@@ -24,7 +24,7 @@ export const VariantTypes = {
   FLOAT1: 1,
   STRING: 2,
   FLOAT2: 3,
-  FLOAT4: 4,
+  FLOAT3: 4,
   UINT:   5,
   INT:    9
 }

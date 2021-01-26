@@ -35,4 +35,6 @@ export default async function OnOpen() {
 
   this.state.user.meta = meta
   await this.send(`INIT:${host}@${port}@${type}`)
+  
+  this.pushToLogs(`Connected to ${host}:${port}`)
 }
