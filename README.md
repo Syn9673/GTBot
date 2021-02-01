@@ -80,7 +80,11 @@ The `config` file contains the required data to make it work.
   - [x] Recode Proxy to make a ENet Host **per** connection instead of one shared connection.
   - [ ] Support subserver connections (OnSendToServer).
   - [x] Fix connections to private servers.
-  - [x] World Joining
+  - [x] World Joining.
+  - [] Use Functional Components for the Website instead of Class Components.
+    - [x] Use Typescript.
+    - [x] Redesign. (Part 1)
+    - [ ] Redesign. (Part 2)
   - [ ] Get all player details in world.
     - [ ] Card Design.
     - [x] Get Necessary info from `OnSpawn`.
@@ -92,4 +96,7 @@ The `config` file contains the required data to make it work.
 You can join the [Pogtopia Development Discord](https://discord.gg/vap8XBhhvz) and ask in the `#coding` channel for support about this project. 
 
 ## Credits
-[ama](https://github.com/ama6nen) - Contains the modified ENet Library to work with the gt server. And string types of packet types.
+[ama](https://github.com/ama6nen) - Contains the modified ENet Library to work with the gt server. And string types of packet types.  
+
+## Note
+If you'd like to make your own client code, see `PROTOCOL.md` on how the proxy should work.

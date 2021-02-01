@@ -3,8 +3,9 @@ class BetterMap extends Map {
     super()
   }
 
-  set(key, val) {
+  public set<T>(key: string, val: T) {
     super.set(key, val)
+
     return this
   }
 }

@@ -9,5 +9,26 @@
   "cors": {
     "ip": "127.0.0.1",
     "port": 8181
+  },
+  
+  "web": {
+    "palettes": [
+      {
+        "type": "dark",
+        "primary": {
+          "light": "#64b5f6",
+          "main": "#2196f3",
+          "dark": "#1976d2"
+        }
+      },
+      {
+        "type": "light",
+        "primary": {
+          "light": "#64b5f6",
+          "main": "#2196f3",
+          "dark": "#1976d2"
+        }
+      }
+    ]  
   }
 }
