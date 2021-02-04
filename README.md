@@ -81,13 +81,14 @@ The `config` file contains the required data to make it work.
   - [ ] Support subserver connections (OnSendToServer).
   - [x] Fix connections to private servers.
   - [x] World Joining.
-  - [] Use Functional Components for the Website instead of Class Components.
+  - [ ] Web rewrite.
     - [x] Use Typescript.
     - [x] Redesign. (Part 1)
-    - [ ] Redesign. (Part 2)
+    - [x] Redesign. (Part 2)
+    - [ ] Last touches.
   - [ ] Get all player details in world.
     - [ ] Card Design.
-    - [x] Get Necessary info from `OnSpawn`.
+    - [ ] Get Necessary info from `OnSpawn`.
     - [ ] Update Player details if necessary.
     - [ ] Player details cleanup. (When leaving world)
   - [ ] ??? (Suggest at our support server)

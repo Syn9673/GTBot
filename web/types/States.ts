@@ -10,6 +10,12 @@ export interface User {
   meta?: string
 }
 
+export interface FileLog {
+  name: string
+  content: Buffer
+  id: string
+}
+
 export interface Main {
   server: Server
   user: User
@@ -18,4 +24,8 @@ export interface Main {
   logs: string[]
   ws?: WebSocket
   connDisabled?: boolean
+  connected?: boolean
+  downloads?: FileLog[]
+  dID?: number
+  modalShown?: boolean
 }

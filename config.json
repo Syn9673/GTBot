@@ -15,10 +15,19 @@
     "palettes": [
       {
         "type": "dark",
+        "background": {
+          "default": "#181818",
+          "paper": "#212121"
+        },
         "primary": {
           "light": "#64b5f6",
-          "main": "#2196f3",
-          "dark": "#1976d2"
+          "main": "#1976d2",
+          "dark": "#2196f3"
+        },
+        "secondary": {
+          "light": "#f6685e",
+          "main": "#f44336",
+          "dark": "#aa2e25"
         }
       },
       {
@@ -27,6 +36,11 @@
           "light": "#64b5f6",
           "main": "#2196f3",
           "dark": "#1976d2"
+        },
+        "secondary": {
+          "light": "#f6685e",
+          "main": "#f44336",
+          "dark": "#aa2e25"
         }
       }
     ]  

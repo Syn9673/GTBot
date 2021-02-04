@@ -1,12 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
-import { Main } from "./States";
+import Index from '../pages/index'
 
-export interface DefaultArgs {
-  data: Main,
-  setData: Dispatch<SetStateAction<Main>>,
+export interface DefaultEventArgs {
+  page: Index,
   ws: WebSocket
 }
 
-export interface OnMessageArgs extends DefaultArgs {
+export interface OnMessageArgs extends DefaultEventArgs {
   chunk: MessageEvent | Buffer
 }

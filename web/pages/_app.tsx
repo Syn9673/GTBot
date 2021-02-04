@@ -3,6 +3,8 @@ import Head from 'next/head'
 import Config from '../../config.json'
 import { useState, useEffect } from 'react'
 
+import '../assets/index.css'
+
 import 'fontsource-roboto'
 import {
   createMuiTheme,
@@ -48,7 +50,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             right: '5px'
           }}
         >
-          {id ? <Brightness3 /> : <Brightness5 />}
+          {id ? <Brightness3 style={{ color: '#212121' }} /> : <Brightness5 style={{ color: '#ffeb3b' }} />}
         </IconButton>
       </MuiThemeProvider>
     </>

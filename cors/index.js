@@ -12,8 +12,14 @@ http.use(cors())
 
 http.post('/url', async (req, res) => {
   let { body: url } = req
+  let host
 
   if (typeof url !== 'string') url = ''
+  url = url?.toLowerCase()
+
+  if (!url.startsWith('growtopia1.com') && !url.startsWith('growtopia2.com'))
+    host = ''
+  else host = url
 
   if (!url.startsWith('http://') && !url.startsWith('https://'))
     url = `http://${url}`
@@ -26,10 +32,11 @@ http.post('/url', async (req, res) => {
       {
         method: 'POST',
         body: ' '.repeat(38),
+        timeout: 3000,
         headers: {
           accept: '*/*',
           'content-type': 'application/x-www-form-urlencoded',
-          host: 'growtopia1.com'
+          host
         },
       }
     )
